@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <sysexits.h>
 #include <unistd.h>
+#include <limits.h>
 
 #define USAGE \
     "Usage: %1$s [options] -- command [args...]\n" \
@@ -15,7 +16,7 @@ typedef struct options {
     pid_t pid;
 } options_t;
 
-static int parse_pid(const char *str, pid_t *result)
+static int parse_int(const char *str, int *result, int min, int max)
 {
     char *endptr;
     long value;
@@ -30,7 +31,7 @@ static int parse_pid(const char *str, pid_t *result)
         return -1;
     }
 
-    if (value < 0) {
+    if (value < min || value > max) {
         errno = ERANGE;
         return -1;
     }
@@ -46,7 +47,7 @@ static int read_options(int argc, char **argv, options_t *options)
     while (opt = getopt(argc, argv, "p:"), opt != -1)
         switch (opt) {
         case 'p':
-            if (parse_pid(optarg, &options->pid) != 0) {
+            if (parse_int(optarg, &options->pid, 1, INT_MAX) != 0) {
                 warn("Invalid pid \"%s\"", optarg);
                 return -1;
             }
