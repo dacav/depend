@@ -1,0 +1,34 @@
+.Dd $Mdocdate$
+.Dt DEPEND 1
+.Os
+.
+.Sh NAME
+.Nm depend
+.Nd bind new process to parent shell
+.Sh SYNPOSIS
+.Nm depend
+.Ar command ...
+.
+.Sh DESCRIPTION
+.Nm
+is a simple program that runs a given
+.Ar command
+until the parent process (the process that launched
+.Nm )
+is terminated.
+
+This is useful for launching background processes from a shell script or
+an interactive shell that should keep running only as long as the parent
+shell runs.
+.
+.Sh EXAMPLES
+.Bd -literal -offset indent
+$ depend tail -F /var/log/x.log &
+.Ed
+
+In the above example,
+.Xr tail 1
+will run in the background until the parent shell is terminated.
+.
+.Sh AUTHORS
+.\" TO BE ADDED
